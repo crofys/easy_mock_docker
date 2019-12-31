@@ -1,0 +1,48 @@
+version: "3"
+
+services:
+  redis:
+    image: redis:alpine
+    container_name: mock_redis
+    ports:
+      - "6379:6379"
+    command: redis-server --requirepass  zdfBQ32iqts8uacT
+    networks:
+      - frontEnd
+    volumes:
+      - ./data/redis:/data
+
+  mongo:
+    image: mongo:4.2.2
+    container_name: mock_mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    environment:
+      TZ: Asia/Shanghai
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: n3DwIgyc2iOhS68o
+    networks:
+      - frontEnd
+    volumes:
+      - ./docker/mongodb/initdb.d/:/docker-entrypoint-initdb.d/
+      - ./docker/mongodb/mongod.conf:/etc/mongod.conf
+      - ./data/mongodb/data/db/:/data/db/
+      - ./data/mongodb/data/log/:/var/log/mongodb/
+  # app:
+  #   image: node:13.5.0-alpine
+  #   container_name: mock_app
+  #   volumes:
+  #     - ./:/data/app
+  #   restart: always
+  #   working_dir: /data/app
+  #   command: yarn start
+  #   ports:
+  #     - 7300:7300
+  #   networks:
+  #     - frontEnd
+  #   depends_on:
+  #     - mongo
+  #     - redis
+networks:
+  frontEnd:
